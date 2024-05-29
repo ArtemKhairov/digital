@@ -1,9 +1,9 @@
+import {useCallback} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-// import HomeScreen from './Home/HomeScreen';
-// import CopyScreen from './Home/CopyScreen';
 import {Screen} from './Home/Screen';
 import SettingsScreen from './Settings/SettingsScreen';
+import {Nfc, NfcReader} from './Nfc';
 // Icons
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -11,24 +11,39 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
+  const IconComponentHome = useCallback(
+    props => <IconEntypo name="briefcase" {...props} />,
+    []
+  );
+  const IconComponentSettings = useCallback(
+    props => <MaterialIcons name="settings" {...props} />,
+    []
+  );
+  const IconSettings = useCallback(
+    props => <MaterialIcons name="settings" {...props} />,
+    []
+  );
   return (
     <Tab.Navigator>
       <Tab.Screen
         name="Портфель"
         component={Screen}
         options={{
-          tabBarIcon: ({color, size}) => {
-            return <IconEntypo name="briefcase" color={color} size={size} />;
-          },
+          tabBarIcon: IconComponentHome,
         }}
       />
       <Tab.Screen
         name="Настройки"
         component={SettingsScreen}
         options={{
-          tabBarIcon: ({color, size}) => (
-            <MaterialIcons name="settings" color={color} size={size} />
-          ),
+          tabBarIcon: IconComponentSettings,
+        }}
+      />
+      <Tab.Screen
+        name="Nfc"
+        component={NfcReader}
+        options={{
+          tabBarIcon: IconSettings,
         }}
       />
     </Tab.Navigator>

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Card from './Card';
 import {SignatureList} from './Signature';
+import {AddCard} from './AddCard/AddCard';
 
 if (
   Platform.OS === 'android' &&
@@ -28,7 +29,7 @@ const ADVANCED_SIGNATURE = [
   },
   {
     title: 'Дата окончания действия подписи',
-    subTitle: '06.05.2024',
+    subTitle: '06.05.2034',
   },
   {
     title: 'Серийный номер',
@@ -47,7 +48,7 @@ const QUALIFIED_SIGNATURE = [
   },
   {
     title: 'Дата окончания действия подписи',
-    subTitle: '06.05.2024',
+    subTitle: '06.05.2034',
   },
   {
     title: 'Серийный номер',
@@ -56,6 +57,7 @@ const QUALIFIED_SIGNATURE = [
 ];
 
 const Screen = () => {
+  const [add, setAdd] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
   const fadeAnim = useRef(new Animated.Value(0)).current; // Начальное значение прозрачности для анимации
 
@@ -84,6 +86,26 @@ const Screen = () => {
     }
   };
 
+  const handleDelete = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start(() => setShow(false));
+    setAdd(!add);
+  };
+
+  const handleAdd = () => {
+    setAdd(!add);
+    setShow(true);
+    // Затем анимируем появление
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
     <View style={styles.wrapper}>
       <View
@@ -96,7 +118,11 @@ const Screen = () => {
             styles.container,
             show ? styles.justifyFlexStart : styles.justifyCenter,
           ]}>
-          <Card onPress={handleCard} />
+          {add ? (
+            <AddCard onPress={handleAdd} />
+          ) : (
+            <Card onPress={handleCard} onDelete={handleDelete} />
+          )}
           {show && (
             <Animated.View
               style={[

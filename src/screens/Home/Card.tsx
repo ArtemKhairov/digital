@@ -1,18 +1,14 @@
 import {FC} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  GestureResponderEvent,
-} from 'react-native';
+import {View, Text, StyleSheet, GestureResponderEvent} from 'react-native';
 import {Wrapper} from '../../containers/Wrapper';
+import {IconButton} from 'react-native-paper';
 
 interface CardProps {
   onPress: (event: GestureResponderEvent) => void;
+  onDelete: (event: GestureResponderEvent) => void;
 }
 
-const Card: FC<CardProps> = ({onPress}) => {
+const Card: FC<CardProps> = ({onPress, onDelete}) => {
   const handlePress = (e: GestureResponderEvent) => {
     onPress(e);
   };
@@ -21,13 +17,11 @@ const Card: FC<CardProps> = ({onPress}) => {
     <Wrapper useForeground activeOpacity={0.7} onPress={handlePress}>
       <View style={styles.card}>
         <View style={styles.row}>
-          <Button
-            color={'pink'}
-            title="Удалить"
-            // disabled
-            onPress={(event: GestureResponderEvent) => {
-              console.log(event.type, 'event');
-            }}
+          <IconButton
+            icon="delete"
+            // iconColor={MD3Colors.}
+            size={24}
+            onPress={onDelete}
           />
         </View>
         <View style={styles.cardItem}>
@@ -55,16 +49,17 @@ const Card: FC<CardProps> = ({onPress}) => {
 
 const styles = StyleSheet.create({
   card: {
-    padding: 10,
     // flex: 1,
-    height: 'auto',
+    height: 200,
+    padding: 10,
+    // height: 'auto',
     borderRadius: 8,
     backgroundColor: 'pink',
   },
   row: {
     position: 'absolute',
-    left: 250,
-    top: 30,
+    left: 290,
+    top: 10,
     zIndex: 3, // works on ios
     elevation: 3, // works on android
   },

@@ -1,7 +1,7 @@
 import {useCallback} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import {Screen} from './Home/Screen';
+import {HomeScreen} from './Home/HomeScreen';
 import SettingsScreen from './Settings/SettingsScreen';
 import {Nfc, NfcReader} from './Nfc';
 // Icons
@@ -27,7 +27,7 @@ function MyTabs() {
     <Tab.Navigator>
       <Tab.Screen
         name="Портфель"
-        component={Screen}
+        component={HomeScreen}
         options={{
           tabBarIcon: IconComponentHome,
         }}

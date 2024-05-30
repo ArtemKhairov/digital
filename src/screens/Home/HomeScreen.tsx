@@ -56,7 +56,14 @@ const QUALIFIED_SIGNATURE = [
   },
 ];
 
-const Screen = () => {
+const USER = {
+  name: 'Artem',
+  surname: 'Khairov',
+  CAN: 130397,
+  birth: '13.03.1997',
+};
+
+const HomeScreen = () => {
   const [add, setAdd] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
   const fadeAnim = useRef(new Animated.Value(0)).current; // Начальное значение прозрачности для анимации
@@ -121,7 +128,7 @@ const Screen = () => {
           {add ? (
             <AddCard onPress={handleAdd} />
           ) : (
-            <Card onPress={handleCard} onDelete={handleDelete} />
+            <Card onPress={handleCard} onDelete={handleDelete} user={USER} />
           )}
           {show && (
             <Animated.View
@@ -195,4 +202,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export {Screen};
+export {HomeScreen};

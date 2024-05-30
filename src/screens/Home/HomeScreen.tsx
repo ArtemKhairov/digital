@@ -10,6 +10,7 @@ import {
 import Card from './Card';
 import {SignatureList} from './Signature';
 import {AddCard} from './AddCard/AddCard';
+import {useAppContext} from '../../hooks/useAppContext';
 
 if (
   Platform.OS === 'android' &&
@@ -56,18 +57,11 @@ const QUALIFIED_SIGNATURE = [
   },
 ];
 
-const USER = {
-  name: 'Artem',
-  surname: 'Khairov',
-  CAN: 130397,
-  birth: '13.03.1997',
-};
-
 const HomeScreen = () => {
-  const [add, setAdd] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
   const fadeAnim = useRef(new Animated.Value(0)).current; // Начальное значение прозрачности для анимации
-
+  const {user, actions} = useAppContext();
+  console.log(Boolean(user), user);
   const handleCard = () => {
     LayoutAnimation.easeInEaseOut();
     toggleText();
@@ -99,18 +93,18 @@ const HomeScreen = () => {
       duration: 500,
       useNativeDriver: true,
     }).start(() => setShow(false));
-    setAdd(!add);
+    actions.resetUserInfo();
   };
 
-  const handleAdd = () => {
-    setAdd(!add);
-    setShow(true);
-    // Затем анимируем появление
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
+  const handleAdd = async () => {
+    // setShow(true);
+    // // Затем анимируем появление
+    // Animated.timing(fadeAnim, {
+    //   toValue: 1,
+    //   duration: 500,
+    //   useNativeDriver: true,
+    // }).start();
+    await actions.readUserInfoTag();
   };
 
   return (
@@ -125,10 +119,10 @@ const HomeScreen = () => {
             styles.container,
             show ? styles.justifyFlexStart : styles.justifyCenter,
           ]}>
-          {add ? (
+          {!user ? (
             <AddCard onPress={handleAdd} />
           ) : (
-            <Card onPress={handleCard} onDelete={handleDelete} user={USER} />
+            <Card onPress={handleCard} onDelete={handleDelete} user={user} />
           )}
           {show && (
             <Animated.View

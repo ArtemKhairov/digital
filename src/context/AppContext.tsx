@@ -1,12 +1,13 @@
 import React, {Component, createContext} from 'react';
 import {createStorage} from '../utils/Storage';
+import NfcProxy from '../utils/NfcProxy';
 
 const personalListHandler = createStorage('personalList');
 
 const Context = createContext({});
 
 type ActionMethods = {
-  [index: string]: (value: any) => void;
+  [index: string]: (value?: any) => void;
 };
 
 const Actions: ActionMethods = {};
@@ -17,6 +18,7 @@ class Provider extends Component<any, any> {
     this.state = {
       showNfcPrompt: false,
       storageCache: [],
+      user: null,
     };
   }
 
@@ -38,6 +40,15 @@ class Provider extends Component<any, any> {
       await personalListHandler.set(data);
       this.setState({storageCache: await personalListHandler.get(true)});
     };
+
+    Actions.readUserInfoTag = async () => {
+      const userData = await NfcProxy.readUserInformationTag();
+      userData && this.setState({user: userData});
+    };
+
+    Actions.resetUserInfo = () => {
+      this.setState({user: null});
+    };
   }
 
   render() {
@@ -46,6 +57,7 @@ class Provider extends Component<any, any> {
         value={{
           state: this.state,
           actions: Actions,
+          user: this.state.user,
         }}>
         {this.props.children}
       </Context.Provider>

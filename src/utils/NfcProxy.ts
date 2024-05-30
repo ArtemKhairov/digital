@@ -1,16 +1,19 @@
 import NfcManager, {
   Ndef,
   NfcTech,
-  NfcEvents,
-  NfcError,
+  // NfcEvents,
+  // NfcError,
   TagEvent,
-  NdefStatus,
+  // NdefStatus,
 } from 'react-native-nfc-manager';
 import {getOutlet} from 'reconnect.js';
+import {User} from '../types/User';
 
 interface TagCustomEvent extends TagEvent {
   ndefStatus?: any;
 }
+
+type Type = keyof User;
 
 const withAndroidPrompt = (fn: any) => {
   async function wrapper() {
@@ -58,10 +61,8 @@ class NfcProxy {
 
   readTag = withAndroidPrompt(async () => {
     let tag: TagCustomEvent | null = null;
-
     try {
       await NfcManager.requestTechnology([NfcTech.Ndef]);
-
       tag = await NfcManager.getTag();
       if (tag) {
         tag.ndefStatus = await NfcManager.ndefHandler.getNdefStatus();
@@ -71,7 +72,31 @@ class NfcProxy {
     } finally {
       NfcManager.cancelTechnologyRequest();
     }
+    return tag;
   });
+
+  async readUserInformationTag() {
+    const tag: TagCustomEvent | null = await this.readTag();
+    let user = {} as User;
+    // console.log(tag);
+    if (tag && tag?.ndefMessage?.length > 0) {
+      let type: Type = 'name';
+      let payload: string | number;
+      tag?.ndefMessage.forEach((_, i) => {
+        type = Ndef.util
+          .bytesToString(tag?.ndefMessage?.[i]?.type)
+          .split('/')[1] as Type;
+        payload = Ndef.util.bytesToString(tag?.ndefMessage?.[i]?.payload);
+        if (['name', 'surname'].includes(type)) {
+          payload = payload.charAt(0).toUpperCase() + payload.slice(1);
+        }
+        // @ts-ignore
+        user[type] = payload;
+      });
+      return user;
+    }
+    return false;
+  }
 }
 
 export default new NfcProxy();

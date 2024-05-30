@@ -15,7 +15,7 @@ const Card: FC<CardProps> = ({onPress, onDelete, user}) => {
     onPress(e);
   };
 
-  const {name, surname, CAN} = user;
+  const {name, surname, can, expire} = user;
 
   return (
     <Wrapper useForeground activeOpacity={0.7} onPress={handlePress}>
@@ -34,11 +34,11 @@ const Card: FC<CardProps> = ({onPress, onDelete, user}) => {
         <View style={styles.rowItems}>
           <View style={styles.cardItem}>
             <Text style={styles.title}>Годен до</Text>
-            <Text style={styles.subTitle}>06.05.2034</Text>
+            <Text style={styles.subTitle}>{expire}</Text>
           </View>
           <View style={styles.cardItem}>
             <Text style={styles.title}>CAN</Text>
-            <Text style={styles.subTitle}>{CAN}</Text>
+            <Text style={styles.subTitle}>{can}</Text>
           </View>
         </View>
       </View>

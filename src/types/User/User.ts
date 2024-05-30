@@ -3,5 +3,6 @@ export interface User {
   surname: string;
   patronymic?: string;
   birth: string; // Date
-  CAN: number;
+  can: number;
+  expire: string;
 }

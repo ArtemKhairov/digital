@@ -6,11 +6,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import NfcManager, {Ndef, NfcEvents, NfcTech} from 'react-native-nfc-manager';
-import NfcProxy from '../../utils/NfcProxy';
+import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
+import {useAppContext} from '../../hooks/useAppContext';
 
 const NfcReader = () => {
   const [hasNfc, setHasNFC] = useState<boolean | null>(null);
+  const {actions} = useAppContext();
+
   useEffect(() => {
     const checkIsSupported = async () => {
       const deviceIsSupported = await NfcManager.isSupported();
@@ -34,33 +36,8 @@ const NfcReader = () => {
     };
   }, []);
 
-  const readTag = async () => {
-    let tag = null;
-
-    try {
-      await NfcManager.requestTechnology([NfcTech.Ndef]);
-      tag = await NfcManager.getTag();
-      // @ts-ignore
-      tag.ndefStatus = await NfcManager.ndefHandler.getNdefStatus();
-    } catch (ex) {
-      console.log('readTag Exception:', ex);
-    } finally {
-      NfcManager.cancelTechnologyRequest();
-    }
-    let message = tag?.ndefMessage?.[0]?.payload;
-    let type = tag?.ndefMessage?.[0].type;
-    // @ts-ignore
-
-    console.log(
-      Ndef.util.bytesToString(message),
-      Ndef.util.bytesToString(type)
-    );
-    // @ts-ignore
-    // await NfcManager.registerTagEvent();
-  };
-
   const readTagProxy = async () => {
-    await NfcProxy.readTag();
+    await actions.readUserInfoTag();
   };
 
   if (hasNfc === null) {

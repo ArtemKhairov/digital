@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import NfcManager, {Ndef, NfcEvents, NfcTech} from 'react-native-nfc-manager';
+import NfcProxy from '../../utils/NfcProxy';
 
 const NfcReader = () => {
   const [hasNfc, setHasNFC] = useState<boolean | null>(null);
@@ -48,18 +49,18 @@ const NfcReader = () => {
     }
     let message = tag?.ndefMessage?.[0]?.payload;
     let type = tag?.ndefMessage?.[0].type;
-    console.log(JSON.stringify(tag?.ndefMessage?.length, null, 2));
-    // console.log(Ndef.uri.decodePayload(tag?.ndefMessage?[0]?['payload'].toString()));
-    // console.log(tag?.ndefMessage, 'readTag Data');
     // @ts-ignore
-    // console.log(Ndef.uri.decodePayload(message), Ndef.uri.decodePayload(type));
+
     console.log(
       Ndef.util.bytesToString(message),
       Ndef.util.bytesToString(type)
     );
     // @ts-ignore
-    // console.log(Ndef.uri.decodePayload(type));
     // await NfcManager.registerTagEvent();
+  };
+
+  const readTagProxy = async () => {
+    await NfcProxy.readTag();
   };
 
   if (hasNfc === null) {
@@ -76,8 +77,8 @@ const NfcReader = () => {
   return (
     <SafeAreaView style={styles.wrapper}>
       <Text>Hello world</Text>
-      <TouchableOpacity style={[styles.btn]} onPress={readTag}>
-        <Text style={{color: 'white'}}>Scan Tag</Text>
+      <TouchableOpacity style={[styles.btn]} onPress={readTagProxy}>
+        <Text style={styles.scanText}>Scan Tag</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -93,6 +94,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: 'red',
+  },
+  scanText: {
+    color: 'white',
   },
 });
 

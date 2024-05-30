@@ -12,7 +12,7 @@ interface TagCustomEvent extends TagEvent {
   ndefStatus?: any;
 }
 
-const withAndroidPrompt = fn => {
+const withAndroidPrompt = (fn: any) => {
   async function wrapper() {
     try {
       getOutlet('androidPrompt').update({
@@ -30,7 +30,7 @@ const withAndroidPrompt = fn => {
     } finally {
       setTimeout(() => {
         getOutlet('androidPrompt').update({
-          visible: true,
+          visible: false,
         });
       }, 800);
     }
@@ -63,9 +63,11 @@ class NfcProxy {
       await NfcManager.requestTechnology([NfcTech.Ndef]);
 
       tag = await NfcManager.getTag();
-      tag.ndefStatus = await NfcManager.ndefHandler.getNdefStatus();
+      if (tag) {
+        tag.ndefStatus = await NfcManager.ndefHandler.getNdefStatus();
+      }
     } catch (ex) {
-      console.log(ex);
+      console.log('readTag Exception:', ex);
     } finally {
       NfcManager.cancelTechnologyRequest();
     }

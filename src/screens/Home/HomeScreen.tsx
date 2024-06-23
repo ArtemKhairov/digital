@@ -6,11 +6,14 @@ import {
   UIManager,
   LayoutAnimation,
   Animated,
+  // ScrollView,
 } from 'react-native';
 import Card from './Card';
-import {SignatureList} from './Signature';
+// import {SignatureList} from './Signature';
 import {AddCard} from './AddCard/AddCard';
 import {useAppContext} from '../../hooks/useAppContext';
+import {SignatureItem} from './Signature/SignatureItem';
+import {PASSPORT, SMARTCARD} from './constants';
 
 if (
   Platform.OS === 'android' &&
@@ -19,49 +22,12 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const ADVANCED_SIGNATURE = [
-  {
-    title: 'Имя',
-    subTitle: 'Артём',
-  },
-  {
-    title: 'Фамилия',
-    subTitle: 'Хаиров',
-  },
-  {
-    title: 'Дата окончания действия подписи',
-    subTitle: '06.05.2034',
-  },
-  {
-    title: 'Серийный номер',
-    subTitle: 'H0K1G3N0M3R0D1N',
-  },
-];
-
-const QUALIFIED_SIGNATURE = [
-  {
-    title: 'Имя',
-    subTitle: 'Артём',
-  },
-  {
-    title: 'Фамилия',
-    subTitle: 'Хаиров',
-  },
-  {
-    title: 'Дата окончания действия подписи',
-    subTitle: '06.05.2034',
-  },
-  {
-    title: 'Серийный номер',
-    subTitle: 'H0K1G3N0M3R0D1N',
-  },
-];
-
 const HomeScreen = () => {
   const [show, setShow] = useState<boolean>(false);
   const fadeAnim = useRef(new Animated.Value(0)).current; // Начальное значение прозрачности для анимации
+  // @ts-ignore
   const {user, actions} = useAppContext();
-  console.log(Boolean(user), user);
+
   const handleCard = () => {
     LayoutAnimation.easeInEaseOut();
     toggleText();
@@ -97,13 +63,6 @@ const HomeScreen = () => {
   };
 
   const handleAdd = async () => {
-    // setShow(true);
-    // // Затем анимируем появление
-    // Animated.timing(fadeAnim, {
-    //   toValue: 1,
-    //   duration: 500,
-    //   useNativeDriver: true,
-    // }).start();
     await actions.readUserInfoTag();
   };
 
@@ -124,7 +83,7 @@ const HomeScreen = () => {
           ) : (
             <Card onPress={handleCard} onDelete={handleDelete} user={user} />
           )}
-          {show && (
+          {show && user && (
             <Animated.View
               style={[
                 // styles.animatedBox,
@@ -143,15 +102,27 @@ const HomeScreen = () => {
               ]}>
               <View>
                 <View style={styles.emptyBlock} />
-                <SignatureList
-                  header={'Усиленная неквалифицированная электронная подпись'}
-                  data={ADVANCED_SIGNATURE}
-                />
+                {/* @ts-ignore */}
+                {PASSPORT[user?.name].map(item => {
+                  return (
+                    <SignatureItem
+                      key={item.title}
+                      title={item.title}
+                      subTitle={item.subTitle}
+                    />
+                  );
+                })}
+                {/* @ts-ignore */}
+                {SMARTCARD[user?.name].map(item => {
+                  return (
+                    <SignatureItem
+                      key={item.title}
+                      title={item.title}
+                      subTitle={item.subTitle}
+                    />
+                  );
+                })}
                 <View style={styles.emptyBlock} />
-                <SignatureList
-                  header={'Усиленная квалифицированная электронная подпись'}
-                  data={QUALIFIED_SIGNATURE}
-                />
               </View>
             </Animated.View>
           )}

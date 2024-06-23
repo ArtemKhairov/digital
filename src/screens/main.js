@@ -3,7 +3,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import {HomeScreen} from './Home/HomeScreen';
 import SettingsScreen from './Settings/SettingsScreen';
-import {Nfc, NfcReader} from './Nfc';
+
 // Icons
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -16,10 +16,6 @@ function MyTabs() {
     []
   );
   const IconComponentSettings = useCallback(
-    props => <MaterialIcons name="settings" {...props} />,
-    []
-  );
-  const IconSettings = useCallback(
     props => <MaterialIcons name="settings" {...props} />,
     []
   );
@@ -37,13 +33,6 @@ function MyTabs() {
         component={SettingsScreen}
         options={{
           tabBarIcon: IconComponentSettings,
-        }}
-      />
-      <Tab.Screen
-        name="Nfc"
-        component={NfcReader}
-        options={{
-          tabBarIcon: IconSettings,
         }}
       />
     </Tab.Navigator>
